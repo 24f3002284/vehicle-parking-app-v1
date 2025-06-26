@@ -2,50 +2,48 @@
 <!-- inherited all nav features -->
 {%block content%}
 
-            <div class="centers">
-                Recent Parking History
-            </div>
+        <div class="centers">
+                Parking Lots
+        </div>
+    {%if lots%}
+        {%for lot in lots%}
+        
+        {%if lot.parking_spot%}
 
-        <!--Venue 1 starts here-->
         <div class="outer_box">
-            <div class="container">
+            
+            <div class="centers"> Parking lot {{lot.id}}</div>
+            
+            <div class="container">  
             <div class="row">
+                {%for spot in lot.parking_spot%}
                 <div class="col">
-                    <!--Lot 1 card here-->
-                        
+                    {%if spot.status=="Available"%}              
                     <div class="card" style="width: 18rem;">
                         <div class="card-body">
-                            <h5 class="card-title">Parking Lot#1</h5>
+                            <h5 class="card-title">{{lot.address}}</h5>
+                            <h5 class="card-title">Parking Spot ID: {{spot.id}}</h5>
                             
-
-                            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                            <button type="button" class="btn btn-outline-primary">Book</button>
-                            
-                            
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <h6 class="card-subtitle mb-2 text-muted">{{spot.status}}</h6>
+                            <a href="/book/??" type="button" class="btn btn-outline-primary">Book</a>
+                                                        
+                            <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
                                                    
                         </div>
                     </div>
-                    <!--End of Lot 1 card-->
+                    {%endif%}
+                   
                 </div>
-                <div class="col">
-                    <!-- Lot 2 Card here-->
-                        
-                    <div class="card" style="width: 18rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">Parking Lot#2</h5>
-                            <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                            
-                            <button type="button" class="btn btn-outline-primary">Book</button>
-                            
-                            
-                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                        </div>
-                    </div>
-                    <!--End of Lot 2 Card-->
-                </div>
+            {%endfor%}
+                
             </div>
             </div>
-                <div class="center"><button type="button" class="btn btn-primary btn-lg"> + Add lot </button></div>
+             
             </div>
+          {%endif%}
+        {%endfor%}
+
+    {%else%}
+            <h3 class="centers">Sorry, no Parking lots are available!</h3>
+    {%endif%}
 {%endblock%}

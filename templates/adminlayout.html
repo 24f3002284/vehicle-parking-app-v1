@@ -25,11 +25,9 @@
                         <a class="nav-link active" aria-current="page" href="#">Home |</a> 
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link" href="#">Users |</a> 
+                        <a class="nav-link" href="/users/{{name}}">Users |</a> 
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link" href="#">Search |</a> 
-                        </li>
                         <li class="nav-item">
                         <a class="nav-link" href="#">Summary |</a> 
                         </li>
@@ -49,7 +47,7 @@
                 </nav>
 
                 {% block content%}
-                        block=keyword,content=name of block
+                        <!-- block=keyword,content=name of block -->
                 {%endblock%}
                 
             </div>

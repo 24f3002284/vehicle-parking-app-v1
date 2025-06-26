@@ -26,7 +26,7 @@ class Parking_lot(db.Model):
     address=db.Column(db.String,nullable=False)
     price=db.Column(db.Integer,nullable=False)
     pin_code=db.Column(db.Integer,nullable=False)
-    maximum_number_of_spots=db.Column(db.Integer,nullable=False)
+    maximum_number_of_spots=db.Column(db.Integer,nullable=False,default=0)
 
     #relnship.. parking lot should be able to access all parking spots
     parking_spot=db.relationship("Parking_Spot",cascade="all,delete",backref="parking_lot",lazy=True)
@@ -36,7 +36,7 @@ class Parking_Spot(db.Model): #db.Model is a predefined class which is inherited
     __tablename__="parking_spot"
     id=db.Column(db.Integer,primary_key=True) 
     lot_id=db.Column(db.Integer,db.ForeignKey("parking_lot.id"),nullable=False)
-    status=db.Column(db.String,default="A")
+    status=db.Column(db.String,default="Available")
     #Relnships..later
 
     reserve_parking_spot=db.relationship("Reserve_parking_spot",cascade="all,delete",backref="parking_spot",lazy=True)

@@ -20,13 +20,14 @@
                             <h6 class="card-subtitle mb-2 text-muted">Price per hour is Rs.{{stat.lot.price}}</h6>
 
                             <h6 class="card-subtitle mb-2 text-muted">Maximum possible number of spots is {{stat.lot.maximum_number_of_spots}}</h6>
-
+                                                          
                             <div>
-                                <span style="color: green;">Available: {{stat.avail}}/{{stat.total}}</span>
-
-                                <span style="color: green;">Available: {{stat.occ}}/{{stat.total}}</span>
+                                <span style="color: green;">Available: {{stat.avail}}/{{stat.tot}}</span>
+                                <span style="color: red;">Occupied: {{stat.occ}}/{{stat.tot}}</span>
                             </div>
-
+                            
+                            {%else%}
+                                <p>Sorry, No Parking Lot is Available</p>
                                                         
                             <br>
                             <p class="card-text"> {{error_mesg}}</p>

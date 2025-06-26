@@ -1,0 +1,38 @@
+{%extends "userlayout.html"%} 
+<!-- inherited all nav features -->
+{%block content%}
+
+                <div class="center">
+                    <h3 class="centers"><u>Book your Parking lot</u></h3>
+                </div>
+
+                <form action="#" method="POST">
+                <div class="input-form2">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email : </label>
+                        <input type="email" class="form-control" id="email" name="email" default="{{email}}" readonly> 
+                    </div>
+                    <div class="mb-3">
+                        <label for="spot" class="form-label">    Parking Spot ID : </label>
+                        <input type="number" class="form-control" id="spot_id" name="spot_id" value="" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="lot" class="form-label">    Parking Lot ID : </label>
+                        <input type="number" class="form-control" id="lot_id" name="lot_id" value="" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="Vehicle Number" class="form-label">Vehicle Number : </label>
+                        <input type="text" class="form-control" id="vehicle_no" name="vehicle_no" placeholder="KL 2605">
+                    </div>
+                    
+                    <div class="button">
+                        <button type="submit" class="btn btn-success">Reserve</button>
+                    </div>
+                    
+                    <div class="links">
+                        <a href="/userdashboard/{{name}}" type="button" class="btn btn-danger">Cancel</a>
+                    </div>
+                    
+                </div>
+                </form>
+{%endblock%}

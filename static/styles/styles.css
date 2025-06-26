@@ -67,12 +67,15 @@ html{
 
 }
 .centers{
+    width: 25%;
+    
     font-size: xx-large; 
-    color: violet;
+    color: oklab(96.346% 0.00308 0.00084);
     border: 2px solid black;
     border-radius: 10px;
-    text-align: justify;
+    text-align: center;
     padding: 5px;
+    background-color: black;
 }
 .navbar-text{
     font-size: x-large;
