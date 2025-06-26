@@ -3,7 +3,7 @@
 }
 
 html{
-    background-image: url(bkg1.png);
+    background-image: url(/static/images/bkg1.png);
     background-size: cover;
 }
 
@@ -15,7 +15,7 @@ html{
     /* margin-left: 300px; */
     /* margin-right: 300px; */
     text-align: justify;
-    background-image: url(bkg1.png);
+    background-image: url(/static/images/bkg1.png);
     background-size: cover;
     /* background-color: rgba(0,0, 0, 0.6); */
 }
@@ -31,7 +31,7 @@ html{
 .input-form{
     border: 2px solid rgb(243, 4, 179);
     width: 497px;
-    height: 284px;
+    height: 292px;
     margin: auto;
     margin-top: 20px;
     padding: 10px;
@@ -52,7 +52,7 @@ html{
 .input-form2{
     border: 2px solid rgb(243, 4, 179);
     width: 527px;
-    height: 630px;
+    height: 670px;
     margin: auto;
     margin-top: 20px;
     padding: 10px;
@@ -79,7 +79,7 @@ html{
     color: rgb(4, 245, 68);
 }
 .navbar-nav{
-    
+    text-align: center;
     margin-left: 200px;
 }
 .outer_box{
@@ -87,4 +87,21 @@ html{
     margin: auto;
     padding: 10px;
     border-radius: 10px;
+}
+/* .input-form3{
+    border: 2px solid rgb(243, 4, 179);
+    width: 497px;
+    height: 290px;
+    margin: auto;
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 20px;
+    font-size: 16px;
+    text-align: justify;
+    background-color: rgb(245, 249, 4);
+} */
+.error_msg{
+    text-align: center;
+    margin: auto;
+    color: #fc1010;
 }
