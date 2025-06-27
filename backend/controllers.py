@@ -2,6 +2,8 @@
 from flask import Flask,render_template,request,redirect,url_for
 from .models import *
 from flask import current_app as app
+from datetime import datetime
+# from sqlalchemy import func
 
 @app.route("/")
 def home():
@@ -157,7 +159,7 @@ def edit_lot(id,name):
             spots_to_remove=current_no_of_spots-new_max_spots
             available_spots=Parking_Spot.query.filter_by(lot_id=l.id,status="Available").limit(spots_to_remove).all()
 
-            if(len(available_spots)<spots_to_add):
+            if(len(available_spots)<spots_to_remove):
                 db.session.rollback()
                 return redirect(url_for("admindashboardfn",name=name,msg="Cannot reduce spots! Some spots are occupied!!"))
             
@@ -211,6 +213,45 @@ def delete_spot(id,name):
     db.session.delete(s)
     db.session.commit()
     return redirect(url_for("admindashboardfn",name=name,msg=""))
+
+
+@app.route("/book_lot/<name>/<sid>/<pid>",methods=["GET","POST"])
+def book_lot(name,sid,pid):
+    if request.method=="POST":
+        veh_no=request.form.get("vehicle_no")
+        p_time_str=request.form.get("p_time")
+        l_time_str=request.form.get("l_time")
+
+        #converting strings to datetime objects
+        p_time=datetime.strptime(p_time_str,'%Y-%m-%dT%H:%M')
+        l_time=datetime.strptime(l_time_str,'%Y-%m-%dT%H:%M')
+        
+        hours_diff=(l_time-p_time).total_seconds()/3600
+        cost=(hours_diff)*(get_lot(pid).price)
+
+        new_booking=Reserve_parking_spot(spot_id=sid,lot_id=pid,vehicle_no=veh_no,p_time=p_time,l_time=l_time,cost=cost,email=name)
+
+        spot=get_spot(sid)
+        spot.status="Occupied"
+
+        db.session.add(new_booking)
+        db.session.commit()
+
+        return redirect(url_for("userdashboardfn",name=name))
+    
+    spot=Parking_Spot.query.filter_by(id=sid).first()
+    lot=Parking_lot.query.filter_by(id=pid).first()
+
+    available_spots=Parking_Spot.query.filter_by(lot_id=pid,status="Available").count()
+
+    return render_template("book_lot.html",
+                           name=name,
+                           spot_id=sid,
+                           lot_id=pid,
+                           available_spots=available_spots,
+                           spot=spot,
+                           lot=lot
+                        )
 
 
 #supporter fn

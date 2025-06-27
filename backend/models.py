@@ -45,15 +45,16 @@ class Parking_Spot(db.Model): #db.Model is a predefined class which is inherited
 class Reserve_parking_spot(db.Model):
     __tablename__="reserve_parking_spot"
     id=db.Column(db.Integer,primary_key=True)
-    user_id=db.Column(db.Integer,db.ForeignKey("user_details.id"),nullable=False)
+    email=db.Column(db.String,db.ForeignKey("user_details.id"),nullable=False)
+    lot_id=db.Column(db.Integer,db.ForeignKey("parking_lot.id"),nullable=False)
     spot_id=db.Column(db.Integer,db.ForeignKey("parking_spot.id"),nullable=False)
-    parking_timestamp=db.Column(db.DateTime,nullable=False)
-    leaving_timestamp=db.Column(db.DateTime,nullable=False)
-    parking_cost_per_unit_time=db.Column(db.Float,default=0.0)
+    vehicle_no=db.Column(db.String,nullable=False)
+    p_time=db.Column(db.DateTime,nullable=False)
+    l_time=db.Column(db.DateTime,nullable=False)
+    cost=db.Column(db.Float,default=0.0)
     #no need of relnships bcz this table is not acting as a master table(has no child table)
 
 #access parent from child using foreign key. access child from parent, use relationship
 
 #venv\Scripts\activate =>to activate venv
 #python app.py
-
