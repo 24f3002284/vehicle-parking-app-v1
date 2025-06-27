@@ -18,7 +18,7 @@ def signin(): #the fn written after defining route is invoked through web browse
         usr=User_Details.query.filter_by(email=uname,password=pwd).first()
         if usr and usr.role==0: 
             # if usr exists and is admin
-            return redirect(url_for("admindashboardfn",name=uname,msg="")) #to change the url from login to admin dashboard when admin logs in
+            return redirect(url_for("admindashboardfn",name=uname)) #to change the url from login to admin dashboard when admin logs in
                 
         elif usr and usr.role==1:
             return redirect(url_for("userdashboardfn",name=uname)) #to change the url from login to admin dashboard when admin logs in
@@ -61,15 +61,14 @@ def signup(): #we can write def register(): also ie.,fn name can be the same as 
 
 #common route for admin dashboard 
 @app.route("/admin/<name>")
-@app.route("/admin/<name>/<msg>")
-def admindashboardfn(name,msg=""):
+def admindashboardfn(name):
     p_lots=get_lots() #admin should be able to see all the parking lots
     lot_stats=[]
 
     for lot in p_lots:
         avail=0
         occ=0
-        total=len(lot.parking_spot) if lot.parking_spot else 0
+        total=lot.maximum_number_of_spots
 
         for spot in lot.parking_spot:
             if spot.status=="Available":
@@ -84,7 +83,7 @@ def admindashboardfn(name,msg=""):
             'total':total
         })
     
-    return render_template("admindashboard.html",name=name,lot_stats=lot_stats,msg=msg)
+    return render_template("admindashboard.html",name=name,lot_stats=lot_stats)
 
 
 #common route for user dashboard 
@@ -116,7 +115,7 @@ def add_lot(name):
 
             db.session.commit()
 
-        return redirect(url_for("admindashboardfn",name=name,msg="New Parking lot has been succesfully added!"))
+        return redirect(url_for("admindashboardfn",name=name))
 
     return render_template("add_lot.html",name=name)
 
@@ -129,7 +128,7 @@ def search(name):
         if by_location:
             return render_template("admindashboard.html",name=name,lots=by_location)
 
-    return redirect(url_for("admindashboardfn",name=name,msg=""))
+    return redirect(url_for("admindashboardfn",name=name))
 
 
 @app.route("/edit_lot/<id>/<name>",methods=["GET","POST"])
@@ -141,13 +140,14 @@ def edit_lot(id,name):
         pin=request.form.get("pincode")
         max_num_of_spots=request.form.get("max_no_of_spots")
 
-        current_no_of_spots=len(l.parking_spot)
-        new_max_spots=int(max_num_of_spots)
+        current_no_of_spots=l.maximum_number_of_spots
 
         l.address=address
         l.price=price
         l.pin_code=pin
         l.maximum_number_of_spots=max_num_of_spots
+
+        new_max_spots=l.maximum_number_of_spots
 
         if(new_max_spots>current_no_of_spots):
             spots_to_add=new_max_spots-current_no_of_spots
@@ -161,13 +161,13 @@ def edit_lot(id,name):
 
             if(len(available_spots)<spots_to_remove):
                 db.session.rollback()
-                return redirect(url_for("admindashboardfn",name=name,msg="Cannot reduce spots! Some spots are occupied!!"))
+                return redirect(url_for("admindashboardfn",name=name))
             
             for spot in available_spots:
                 db.session.delete(spot)
 
         db.session.commit() #updating
-        return redirect(url_for("admindashboardfn",name=name,msg="A Parking lot has successfully been edited"))
+        return redirect(url_for("admindashboardfn",name=name))
     
     return render_template("edit_lot.html",lots=l,name=name)
 
@@ -185,7 +185,7 @@ def delete_lot(id,name):
 
     db.session.delete(l)
     db.session.commit()
-    return redirect(url_for("admindashboardfn",name=name,msg="A Parking lot has successfully been deleted!"))
+    return redirect(url_for("admindashboardfn",name=name))
 
 
 @app.route("/edit_spot/<id>/<name>",methods=["GET","POST"])
@@ -197,7 +197,7 @@ def edit_spot(id,name):
         s.status=status
 
         db.session.commit() #updating
-        return redirect(url_for("admindashboardfn",name=name,msg="A Parking slot has been successfully edited!"))
+        return redirect(url_for("admindashboardfn",name=name))
     
     return render_template("edit_spot.html",spot=s,name=name)
 
@@ -208,11 +208,11 @@ def delete_spot(id,name):
 
     if s.status=="Occupied":
         msg="Can't Delete an already occupied Parking spot!"
-        return redirect(url_for("admindashboardfn",name=name,msg=msg))
+        return redirect(url_for("admindashboardfn",name=name))
     
     db.session.delete(s)
     db.session.commit()
-    return redirect(url_for("admindashboardfn",name=name,msg=""))
+    return redirect(url_for("admindashboardfn",name=name))
 
 
 @app.route("/book_lot/<name>/<sid>/<pid>",methods=["GET","POST"])

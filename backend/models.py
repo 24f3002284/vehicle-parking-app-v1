@@ -24,9 +24,18 @@ class Parking_lot(db.Model):
     __tablename__="parking_lot"
     id=db.Column(db.Integer,primary_key=True)
     address=db.Column(db.String,nullable=False)
-    price=db.Column(db.Integer,nullable=False)
+    price=db.Column(db.Float,nullable=False)
     pin_code=db.Column(db.Integer,nullable=False)
     maximum_number_of_spots=db.Column(db.Integer,nullable=False,default=0)
+    
+    @property
+    def available_spots(self):
+        return sum(1 for spot in self.parking_spot if spot.status=="Available")
+    
+    @property
+    def occupied_spots(self):
+        return sum(1 for spot in self.parking_spot if spot.status!="Available")
+
 
     #relnship.. parking lot should be able to access all parking spots
     parking_spot=db.relationship("Parking_Spot",cascade="all,delete",backref="parking_lot",lazy=True)
@@ -45,7 +54,7 @@ class Parking_Spot(db.Model): #db.Model is a predefined class which is inherited
 class Reserve_parking_spot(db.Model):
     __tablename__="reserve_parking_spot"
     id=db.Column(db.Integer,primary_key=True)
-    email=db.Column(db.String,db.ForeignKey("user_details.id"),nullable=False)
+    email=db.Column(db.String,db.ForeignKey("user_details.email"),nullable=False)
     lot_id=db.Column(db.Integer,db.ForeignKey("parking_lot.id"),nullable=False)
     spot_id=db.Column(db.Integer,db.ForeignKey("parking_spot.id"),nullable=False)
     vehicle_no=db.Column(db.String,nullable=False)
