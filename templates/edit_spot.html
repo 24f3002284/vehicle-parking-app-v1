@@ -6,11 +6,11 @@
                     <h3><u>Edit Parking Spot</u></h3>
                 </div>
 
-                <form action="/edit_spot/{{spot.id}}/{{name}}" method="POST">
+                <form action="/edit_spot/{{lid}}/{{spot.id}}/{{name}}" method="POST">
                 <div class="input-form">
                     <div class="mb-3">
                         <label for="lot_id" class="form-label">Parking Lot ID</label>
-                        <input type="number" class="form-control" id="lotid" name="lot_id" value="{{spot.id}}" readonly>
+                        <input type="number" class="form-control" id="lotid" name="lot_id" value="{{lid}}" readonly>
                     </div>
 
                     <div class="mb-3">
@@ -21,7 +21,7 @@
                     <div class="mb-3">
                         <button type="submit" class="btn btn-success">Update</button>
                         
-                        <a href="/delete_spot/{{spot.id}}/{{name}}" type="button" class="btn btn-danger">Delete</a>
+                        <a href="/delete_spot/{{lid}}/{{spot.id}}/{{name}}" type="button" class="btn btn-danger">Delete</a>
 
                         <a href="/admin/{{name}}" type="button" class="btn btn-primary">Cancel</a>
 

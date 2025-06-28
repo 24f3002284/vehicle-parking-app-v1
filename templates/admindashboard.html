@@ -2,11 +2,11 @@
 <!-- inherited all nav features -->
 {%block content%}
             <div class="centers">
-                Parking Lots   
+                Parking Lots   {{msg}}
             </div>
 
             <div class="container">
-                <!-- {%if msg%}{{msg}}{%endif%} -->
+                
                 {%if lot_stats%}
                 <div class="row">
                     {%for stat in lot_stats%}
@@ -27,7 +27,15 @@
                                 <span style="color: red;">Occupied: {{stat.occ}}/{{stat.total}}</span>
                             </div>
 
-                                                        
+
+                            <div class="center"></div>
+                            {%for spot in stat.lot.parking_spot%}
+                            
+                                <a href="/edit_spot/{{stat.lot.id}}/{{spot.id}}/{{name}}">{{spot.status}}</a>
+                             
+                            {%endfor%}   </div>  
+                            
+                            
                             <br>
                             <p class="card-text"> {{error_mesg}}</p>
                             
@@ -36,6 +44,9 @@
                             <a href="/delete_lot/{{stat.lot.id}}/{{name}}" type="button" class="btn btn-outline-danger">Delete</a>
                                                    
                         </div>
+                    </div>
+                    <div>
+
                     </div>
                     <!--End of Card 1-->
                     </div>

@@ -2,22 +2,28 @@
 <!-- inherited all nav features -->
 {%block content%}
 
+<!-- <script>
+    function calculateTotalPrice(priceperhour,)
+</script> -->
+
                 <div class="center">
-                    <h3 class="centers"><u>Book your Parking lot</u></h3>
+                    <h3 class="centers"><u>Book your Parking lot </u></h3>
+                    <h4 class="centers" style="font-size: large;">Price per hour : Rs.{{lot.price}}</h4>
+
                 </div>
 
                 <!-- Display error messages -->
-                 {%if error_msg%}
-                    <div class="alert alert-danger" role="alert">
-                        {{error_msg}}
-                    </div>
+                {%if error_msg%}
+                <div class="alert alert-danger" role="alert">
+                    {{error_msg}}
+                </div>
 
-                  {%endif%}
+                {%endif%}
                   
                 <form action="/book_lot/{{name}}/{{spot_id}}/{{lot_id}}" method="POST">
                 <div class="input-form4">
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email : </label>
+                        <label for="email" class="form-label">Your Email : </label>
                         <input type="email" class="form-control" id="email" name="email" value="{{name}}" readonly> 
                     </div>
                     <div class="mb-3">
@@ -30,17 +36,13 @@
                     </div>
                     <div class="mb-3">
                         <label for="available_spots" class="form-label">    Number of Available Spots in this Parking lot: </label>
-                        <input type="number" class="form-control" id="avail" name="avail" value="{{l.available}}" readonly>
+                        <input type="number" class="form-control" id="avail" name="avail" value="{{available_spots}}" readonly>
                     </div>
                     <div class="mb-3">
                         <label for="address" class="form-label">Location : </label>
                         <input type="type" class="form-control" id="address" name="address" value="{{lot.address}}" readonly> 
                     </div>
-                    <div class="mb-3">
-                        <label for="cost" class="form-label">Price per hour : </label>
-                        <input type="number" class="form-control" id="cost" name="cost" value="{{lot.price}}" readonly>
-                    </div>
-
+                    
                     <div class="mb-3">
                         <label for="Vehicle Number" class="form-label">Vehicle Number : </label>
                         <input type="text" class="form-control" id="vehicle_no" name="vehicle_no" placeholder="KL 2605" required>
@@ -49,15 +51,13 @@
                         <label for="Parking timestamp" class="form-label">Parking time : </label>
                         <input type="datetime-local" class="form-control" id="p_time" name="p_time" placeholder="" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="Leaving timestamp" class="form-label">Leaving time : </label>
-                        <input type="datetime-local" class="form-control" id="l_time" name="l_time" placeholder="" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="cost" class="form-label">Price per hour : </label>
-                        <input type="number" class="form-control" id="cost" name="cost" value="{{lot.price}}" readonly>
-                    </div>
                     
+                    
+                    {%if available_spots==0%}
+                        <div class="mb-3">
+                            <label for="no_of_spots_to_be_booked" class="form-label">Sorry, no more Parking spots are available in this Parking lot!</label>
+                    {%endif%}
+
                     <div>
                         <button type="submit" class="btn btn-success">Reserve</button>
                    

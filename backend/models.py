@@ -28,15 +28,6 @@ class Parking_lot(db.Model):
     pin_code=db.Column(db.Integer,nullable=False)
     maximum_number_of_spots=db.Column(db.Integer,nullable=False,default=0)
     
-    @property
-    def available_spots(self):
-        return sum(1 for spot in self.parking_spot if spot.status=="Available")
-    
-    @property
-    def occupied_spots(self):
-        return sum(1 for spot in self.parking_spot if spot.status!="Available")
-
-
     #relnship.. parking lot should be able to access all parking spots
     parking_spot=db.relationship("Parking_Spot",cascade="all,delete",backref="parking_lot",lazy=True)
 
@@ -45,7 +36,7 @@ class Parking_Spot(db.Model): #db.Model is a predefined class which is inherited
     __tablename__="parking_spot"
     id=db.Column(db.Integer,primary_key=True) 
     lot_id=db.Column(db.Integer,db.ForeignKey("parking_lot.id"),nullable=False)
-    status=db.Column(db.String,default="Available")
+    status=db.Column(db.String,default="A")
     #Relnships..later
 
     reserve_parking_spot=db.relationship("Reserve_parking_spot",cascade="all,delete",backref="parking_spot",lazy=True)
@@ -54,13 +45,13 @@ class Parking_Spot(db.Model): #db.Model is a predefined class which is inherited
 class Reserve_parking_spot(db.Model):
     __tablename__="reserve_parking_spot"
     id=db.Column(db.Integer,primary_key=True)
-    email=db.Column(db.String,db.ForeignKey("user_details.email"),nullable=False)
+    user_id=db.Column(db.String,db.ForeignKey("user_details.email"),nullable=False) #user_id=email
     lot_id=db.Column(db.Integer,db.ForeignKey("parking_lot.id"),nullable=False)
     spot_id=db.Column(db.Integer,db.ForeignKey("parking_spot.id"),nullable=False)
     vehicle_no=db.Column(db.String,nullable=False)
     p_time=db.Column(db.DateTime,nullable=False)
-    l_time=db.Column(db.DateTime,nullable=False)
-    cost=db.Column(db.Float,default=0.0)
+    # l_time=db.Column(db.DateTime,nullable=False)
+
     #no need of relnships bcz this table is not acting as a master table(has no child table)
 
 #access parent from child using foreign key. access child from parent, use relationship

@@ -4,45 +4,42 @@
 
             {%if lots%}
                 <div class="center">
-                    <h3><u>Edit Venue</u></h3>
+                    <h3><u>Edit Parking lot</u></h3>
                 </div>
+
+                {%if error%}
+                    <div class="alert alert-danger" role="alert">
+                        {{error}}
+                    </div>
+                {%endif%}
 
                 <form action="/edit_lot/{{lots.id}}/{{name}}" method="POST">
                 <div class="input-form2">
                     <div class="mb-3">
+                        <label for="lotid" class="form-label">Lot ID</label>
+                        <input type="number" class="form-control" id="lotid" name="lotid" value="{{lid}}" required>
+                    </div>
+                    <div class="mb-3">
                         <label for="address" class="form-label">Address</label>
                         <input type="text" class="form-control" id="address" name="address" value="{{lots.address}}"> 
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="pincode" class="form-label">Pin Code</label>
+                        <input type="number" class="form-control" id="pincode" name="pincode" value="{{lots.pin_code}}">
                     </div>
                     <div class="mb-3">
                         <label for="price" class="form-label">Price per hour</label>
                         <input type="text" class="form-control" id="price" name="price" value="{{lots.price}}">
                     </div>
                     <div class="mb-3">
-                        <label for="pincode" class="form-label">Pin Code</label>
-                        <input type="number" class="form-control" id="pincode" name="pincode" value="{{lots.pin_code}}">
-                    </div>
-                    <div class="mb-3">
                         <label for="maximum_number_of_spots" class="form-label">Maximum Number Of Spots</label>
                         <input type="number" class="form-control" id="spots_num" name="max_no_of_spots" value="{{lots.maximum_number_of_spots}}">
                     </div>
-                    <div class="mb-3">
-                        <label for="avail" class="form-label">Available </label>
-                        <input type="number" class="form-control" id="avail" name="avail">
-                    </div>
-                    <div class="mb-3">
-                        <label for="occ" class="form-label">Occupied </label>
-                        <input type="number" class="form-control" id="occ" name="occ">
-                    </div>
-                    
+                                        
                     <div class="button">
                         <button type="submit" class="btn btn-success">Update</button>
-                    </div>
-
-                    <!-- <div class="links">
-                        <a href="/delete_lot/{{lots.id}}/{{name}}" type="button" class="btn btn-danger">Delete</a>
-                    </div> -->
                     
-                    <div class="links">
                         <a href="/admin/{{name}}" type="button" class="btn btn-primary">Cancel</a>
                     </div>
                     
