@@ -108,3 +108,9 @@ html{
     margin: auto;
     color: #fc1010;
 }
+.cont{
+    border: #fc1010;
+    background-color: aquamarine;
+    color: black;
+    width: 60%;
+}

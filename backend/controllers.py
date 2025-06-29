@@ -3,7 +3,8 @@ from flask import Flask,render_template,request,redirect,url_for
 from .models import *
 from flask import current_app as app
 from datetime import datetime
-from sqlalchemy import func
+# from sqlalchemy import func
+import matplotlib.pyplot as plt
 
 def ensure_admin_exists():
     admin_count=User_Details.query.filter_by(role=0).count()
@@ -105,9 +106,30 @@ def admindashboardfn(name,msg=""):
 @app.route("/user/<name>")
 def userdashboardfn(name):
     p_lots=get_lots()
+
+    lot_stats=[]
+
+    for lot in p_lots:
+        avail=0
+        occ=0
+        total=lot.maximum_number_of_spots
+
+        for spot in lot.parking_spot:
+            if spot.status=="A":
+                avail+=1
+            else:
+                occ+=1
+
+        lot_stats.append({
+            'lot':lot,
+            'avail':avail,
+            'occ':occ,
+            'total':total
+        })
+
     usr=User_Details.query.filter_by(email=name).first()
 
-    return render_template("userdashboard.html",name=name,lots=p_lots,f_name=usr.full_name)
+    return render_template("userdashboard.html",name=name,lots=p_lots,f_name=usr.full_name,lot_stats=lot_stats)
 
 
 @app.route("/lot/<name>",methods=["POST","GET"]) #use routes to connect frontend to backend and use render template to connect backend to frontend
@@ -258,58 +280,79 @@ def edit_spot(lid,sid,name):
     return render_template("edit_spot.html",spot=s,name=name,lid=l)
 
 
-# @app.route("/delete_spot/<id>/<name>",methods=["GET","POST"])
-# def delete_spot(id,name):
-#     s=get_spot(id)
+@app.route("/delete_spot/<lid>/<sid>/<name>",methods=["GET","POST"])
+def delete_spot(lid,sid,name):
+    s=get_spot(sid)
+    l=get_lot(lid)
 
-#     if s.status=="Occupied":
-#         msg="Can't Delete an already occupied Parking spot!"
-#         return redirect(url_for("admindashboardfn",name=name))
+    if s.status=="O":
+        reservation=Reserve_parking_spot.query.filter_by(spot_id=sid).first()
+        if reservation:
+            print(reservation.vehicle_no)
+        else:
+            print("No reservation for this spot")
+        return  
+        # msg="Can't Delete an already occupied Parking spot!"
+        # return redirect(url_for("admindashboardfn",name=name,msg=msg))
+
+    db.session.delete(s)
     
-#     db.session.delete(s)
-#     db.session.commit()
-#     return redirect(url_for("admindashboardfn",name=name))
+    l.maximum_number_of_spots-=1
+
+    db.session.commit()
+
+    return redirect(url_for("admindashboardfn",name=name,msg="Spot deleted successfully!"))
 
 
-@app.route("/book_lot/<name>/<sid>/<pid>",methods=["GET","POST"])
-def book_lot(name,sid,pid):
-    
-    available_spots=get_a(pid)
-    occupied_spots=get_lot(pid).maximum_number_of_spots-available_spots
+@app.route("/book_spot/<lot_id>/<name>",methods=["GET","POST"])
+def select_spot(lot_id,name):
 
-    if request.method=="POST":
-        veh_no=request.form.get("vehicle_no")
-        p_time_str=request.form.get("p_time")
-        # l_time_str=request.form.get("l_time")
-
-        #converting string to datetime objects
-        p_time=datetime.strptime(p_time_str,'%Y-%m-%dT%H:%M')
-        
-        dt_time_now=datetime.today().strftime('%Y-%m-%dT%H:%M')
-
-        #converting string to datetime objects
-        dt_time_now=datetime.strptime(dt_time_now,'%Y-%m-%dT%H:%M')
-        # l_time=datetime.strptime(l_time_str,'%Y-%m-%dT%H:%M')
-        
-        # hours_diff=(l_time-p_time).total_seconds()/3600
-        # cost=(hours_diff)*(get_lot(pid).price)
-
-        if p_time>dt_time_now:
-            new_booking=Reserve_parking_spot(spot_id=sid,lot_id=pid,vehicle_no=veh_no,p_time=p_time,user_id=name)
-            # spot=get_spot(sid)
-            # spot.status="Occupied"
-
-            db.session.add(new_booking)
-            db.session.commit()
-            
-            #booked lots=> by aggregate function sum
-            #1 user can book only 1 parking spot at a time,since 1 vehicle no=>1spot
-            
-            available_spots-=1
+    lot=get_lot(lot_id)
+    if not lot:
         return redirect(url_for("userdashboardfn",name=name))
     
-    spot=Parking_Spot.query.filter_by(id=sid).first()
-    lot=Parking_lot.query.filter_by(id=pid).first()
+    available_spots=Parking_Spot.query.filter_by(lot_id=lot_id,status="A").all()
+
+    if not available_spots:
+        return redirect(url_for("userdashboardfn",name=name))
+    
+    selected_spot=available_spots[0]
+    return redirect(url_for("book_lot",name=name,pid=lot_id,sid=selected_spot.id))
+
+@app.route("/book_lot/<name>/<pid>/<sid>",methods=["GET","POST"])
+def book_lot(name,pid,sid):
+    available_spots=get_a(pid)
+    lot=get_lot(pid)
+    spot=get_spot(sid)
+
+    if not lot or not spot:
+        return redirect(url_for("userdashboardfn",name)) 
+
+    #check if spot is still available
+    if spot.status!="A":
+        return redirect(url_for("userdashboardfn",name=name))
+    
+    if request.method=="POST":
+        veh_no=request.form.get("vehicle_no")
+        p_time_str=request.form.get("p_time") 
+        
+        #converting string to datetime objects
+        p_time=datetime.strptime(p_time_str,'%Y-%m-%dT%H:%M')
+        current_time=datetime.now()  
+
+        if p_time>=current_time:
+            #checking if user already has active booking
+            existing_booking=Reserve_parking_spot.query.filter(user_id=name,l_time=None).first()
+        
+        if not existing_booking:
+            new_booking=Reserve_parking_spot(spot_id=sid,lot_id=pid,vehicle_no=veh_no,p_time=p_time,user_id=name)
+        
+        spot.status="O"
+
+        db.session.add(new_booking)
+        db.session.commit()
+        
+        return redirect(url_for("userdashboardfn",name=name))
 
     return render_template("book_lot.html",
                            name=name,
@@ -317,11 +360,115 @@ def book_lot(name,sid,pid):
                            lot_id=pid,
                            available_spots=available_spots,
                            spot=spot,
-                           lot=lot
+                           lot=lot,
+                           error="Cannot book"
                         )
 
 
-#supporter fn
+@app.route("/my_bookings/<name>")
+def my_bookings(name):
+    #history and present bookings of each user
+    user_bookings=Reserve_parking_spot.query.filter_by(user_id=name).all()
+
+    active_bookings=[]
+    past_bookings=[]
+
+    for booking in user_bookings:
+        booking_data={
+            'booking':booking,
+            'lot':get_lot(booking.lot_id),
+            'spot':get_spot(booking.spot_id)
+        }
+
+    if booking.l_time is None:
+        active_bookings.append(booking_data)
+
+    else:
+        if booking.p_time and booking.l_time:
+            hours_diff=(booking.l_time-booking.p_time).total_seconds()/3600
+            cost=hours_diff*booking_data['lot'].price
+            booking_data['cost']=round(cost,2)
+            booking_data['duration']=round(hours_diff,2)
+
+        past_bookings.append(booking_data)
+
+    return render_template("my_bookings.html",name=name,active_bookings=active_bookings,past_bookings=past_bookings)
+
+
+@app.route("/l_time/<name>/<booking_id>")
+def mark_l_time(name,booking_id):
+    booking=Reserve_parking_spot.query.filter_by(id=booking_id,user_id=name).first()
+
+    if booking and booking.l_time is None:
+        booking.l_time=datetime.now()
+
+        spot=get_spot(booking.spot_id)
+        spot.status="A"
+
+        db.session.commit()
+    
+    return redirect(url_for("my_bookings",name=name))
+
+
+@app.route("/registered_users")
+def registered():
+    users=User_Details.query.all()
+    return render_template("registered_users.html",users=users)
+
+@app.route("/search_users",methods=["GET","POST"])
+def searching():
+    if request.method=="POST":
+        search_text=request.form.get("search")
+
+        if search_text:
+            users=User_Details.query.filter(User_Details.email.ilike(f"%{search_text}%")).all()
+    
+        return render_template("registered_users.html",users=users,search_text=search_text)
+
+    return redirect(url_for("registered"))
+
+
+@app.route("/edit_profile_admin/<email>",methods=["GET","POST"])
+def edit_admin(email):
+    user=User_Details.query.filter_by(email=email).first()
+
+    if not user:
+        return redirect(url_for("admindashboardfn",name=email))
+
+    p=user.password
+    a=user.address
+    n=user.full_name
+    pi=user.pin_code
+
+    if request.method=="POST":
+        em=request.form.get("gmail")
+        pwd=request.form.get("password")
+        fn=request.form.get("fulnam")
+        address=request.form.get("address")
+        pin=request.form.get("pincode")
+
+        user.email=em
+        user.password=pwd
+        user.address=address
+        user.pin_code=pin
+        user.full_name=fn
+
+        db.session.commit()
+
+        return redirect(url_for("admindashboardfn",name=email,msg="Succesfully edited!"))
+
+    return render_template("edit_a.html",email=email,password=p,name=n,address=a,pincode=pi)
+
+
+@app.route("/summary_admin")
+def get_admin_summary():
+    graph=get_plots_summary()
+
+    graph.savefig("./static/images/p_lots_summary.jpeg")
+    graph.clf()  
+    return render_template("summary_admin.html")
+
+#supporter fns
 def get_lots():
     pLots=Parking_lot.query.all() #pLots returns all the parking lots present in the Parking lot
     return pLots
@@ -346,3 +493,34 @@ def get_a(pid):
             avail+=1
 
     return avail
+
+def get_plots_summary():
+    lots=get_lots()
+
+    summary={}
+    for lot in lots:
+        summary[lot.id]=lot.maximum_number_of_spots
+
+    x_axis=list(summary.keys())
+    y_axis=list(summary.values())
+
+    plt.bar(x_axis,y_axis,color="blue",width=0.4)
+
+    plt.title("Parking Lots/Capacities")
+    plt.xlabel("Paking Lot ID")
+    plt.ylabel("Capacity")
+
+    return plt
+
+def calc_cost(p_time,l_time,price_per_hour):
+    if not p_time or not l_time:
+        return 0
+    
+    hours_diff=(l_time-p_time).total_seconds()/3600
+
+    if hours_diff<1:
+        hours_diff=1  #minimum cost
+
+    cost=(hours_diff)*(price_per_hour)
+
+    return round(cost,2)

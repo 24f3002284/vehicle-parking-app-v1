@@ -5,45 +5,31 @@
         <div class="centers">
                 Parking Lots
         </div>
-    {%if lots%}
-        {%for lot in lots%}
-        
-        {%if lot.parking_spot%}
+        <table border="2" class="cont">
+            <tr>
+                <th>ID</th>
+                <th>Location</th>
+                <th>Price per hour</th>
+                <th>Availability</th>
+                <th>Action</th>
+            </tr>
 
-        <div class="outer_box">
-            
-            <div class="centers"> Parking lot {{lot.id}}</div>
-            
-            <div class="container">  
-            <div class="row">
-                {%for spot in lot.parking_spot%}
-                <div class="col">
-                    {%if spot.status=="A"%}              
-                    <div class="card" style="width: 18rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">{{lot.address}}</h5>
-                            <h5 class="card-title">Parking Spot ID: {{spot.id}}</h5>
-                            
-                            <h6 class="card-subtitle mb-2 text-muted">{{spot.status}}</h6>
-                            <a href="/book_lot/{{name}}/{{spot.id}}/{{lot.id}}" type="button" class="btn btn-outline-primary">Book</a>
-                                                        
-                            <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
-                                                   
-                        </div>
-                    </div>
+        {%for stat in lot_stats%}
+            <tr>
+                <td>{{stat.lot.id}}</td>
+                <td>{{stat.lot.address}}</td>
+                <td>Rs.{{stat.lot.price}}</td>
+                <td>{{stat.avail}}/{{stat.total}}</td>
+                <td>
+                    {%if stat.avail>0%}
+                        <a href="/book_spot/{{stat.lot.id}}">Book</a>
+                    {%else%}
+                        <span>Full</span>
                     {%endif%}
-                   
-                </div>
-            {%endfor%}
-                
-            </div>
-            </div>
-             
-            </div>
-          {%endif%}
+                </td>
+            </tr>
         {%endfor%}
+        </table>
+        
 
-    {%else%}
-            <h3 class="centers">Sorry, no Parking lots are available!</h3>
-    {%endif%}
-{%endblock%}
+{%endblock%}     

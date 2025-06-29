@@ -1,11 +1,24 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <title>Registered Users</title>
-</head>
-<body>
+{%extends "adminlayout.html"%} 
+<!-- inherited all nav features -->
+{%block content%}
     <div class="centers"> Registered Users</div>
-    <table>
+    
+
+    <form class="d-flex" method="POST" action="/search_users">
+        <input class="form-control me-2" type="search" placeholder="Search by User email" aria-label="Search" id="search" name="search" value="{{search_text if search_text else ''}}">
+        <button class="btn btn-success" type="submit">Search</button>
+        <a href="/registered_users" class="btn btn-secondary ms-2">Clear</a>
+    </form>
+    <br>
+
+    {%if search_text%}
+        <div class="alert alert-info">
+            Search results for: "<strong>{{search_text}}</strong> 
+        </div>
+    {%endif%}
+
+    <table border="2" class="cont">
+        <thead>
         <tr>
             <th>ID</th>
             <th>E_Mail</th>
@@ -13,11 +26,22 @@
             <th>Address</th>
             <th>Pincode</th>
         </tr>
+        </thead>
+        {%for usr in users%}
+        <tbody>
+        <tr>    
+            {%if usr.role!=0%}
+                <td>{{usr.id-1}}</td>
+                <td>{{usr.email}}</td>
+                <td>{{usr.full_name}}</td>
+                <td>{{usr.address}}</td>
+                <td>{{usr.pin_code}}</td>
+            {%endif%}
+                {%endfor%}
 
-        <tr>
-            {%for usr in }
-            <td></td>
         </tr>
+    </tbody>
     </table>
-</body>
-</html> -->
+
+
+{%endblock%}

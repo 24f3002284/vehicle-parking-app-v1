@@ -20,7 +20,7 @@
 
                 {%endif%}
                   
-                <form action="/book_lot/{{name}}/{{spot_id}}/{{lot_id}}" method="POST">
+                <form action="/book_lot/{{name}}/{{lot_id}}/{{spot_id}}" method="POST">
                 <div class="input-form4">
                     <div class="mb-3">
                         <label for="email" class="form-label">Your Email : </label>
@@ -34,29 +34,11 @@
                         <label for="spot" class="form-label">    Parking Spot ID : </label>
                         <input type="number" class="form-control" id="spot_id" name="spot_id" value="{{spot_id}}" readonly>
                     </div>
-                    <div class="mb-3">
-                        <label for="available_spots" class="form-label">    Number of Available Spots in this Parking lot: </label>
-                        <input type="number" class="form-control" id="avail" name="avail" value="{{available_spots}}" readonly>
-                    </div>
-                    <div class="mb-3">
-                        <label for="address" class="form-label">Location : </label>
-                        <input type="type" class="form-control" id="address" name="address" value="{{lot.address}}" readonly> 
-                    </div>
                     
                     <div class="mb-3">
                         <label for="Vehicle Number" class="form-label">Vehicle Number : </label>
                         <input type="text" class="form-control" id="vehicle_no" name="vehicle_no" placeholder="KL 2605" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="Parking timestamp" class="form-label">Parking time : </label>
-                        <input type="datetime-local" class="form-control" id="p_time" name="p_time" placeholder="" required>
-                    </div>
-                    
-                    
-                    {%if available_spots==0%}
-                        <div class="mb-3">
-                            <label for="no_of_spots_to_be_booked" class="form-label">Sorry, no more Parking spots are available in this Parking lot!</label>
-                    {%endif%}
 
                     <div>
                         <button type="submit" class="btn btn-success">Reserve</button>

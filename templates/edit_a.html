@@ -1,0 +1,48 @@
+{%extends "adminlayout.html"%} 
+<!-- inherited all nav features -->
+{%block content%}
+    
+            <div class="centers">
+                Edit or View Profile details
+            </div>
+            
+            <div class="my_panel">
+                <div class="center">
+                    <h3><u>Edit or View Profile details</u></h3>
+                </div>
+                <form action="/edit_profile_admin/{{email}}" method="POST"> 
+                <div class="input-form2">                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Registered Email ID</label>
+                        <input type="email" class="form-control" id="email" name="gmail" value="{{email}}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" value="{{password}}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="full_name" class="form-label">Fullname</label>
+                        <input type="text" class="form-control" id="full_name" name="fulnam" value="{{name}}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <textarea class="form-control" id="address" name="address" rows="5" cols="50">{{address}}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="pincode" class="form-label">Pin Code</label>
+                        <input type="number" class="form-control" id="pincode" name="pincode" value="{{pincode}}">
+                    </div>
+                    <div class="button">
+                        <button type="submit" class="btn btn-success">Edit</button>
+                    
+                    <a href="/admin/{{name}}" type="button" class="btn btn-primary">Cancel</a>
+                    </div>
+                    <div class="error_msg">
+                        {{error}}
+                    </div>                    
+                </div>
+                </form>
+            </div>
+{%endblock%} 
+
+                            
