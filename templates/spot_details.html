@@ -1,0 +1,139 @@
+{%extends "adminlayout.html"%}
+{%block content%}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-parking"></i> Parking Spot Details</h2>
+                <a href="/admin/{{name}}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spot Information Card -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5><i class="fas fa-info-circle"></i> Spot Information</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th>Spot ID:</th>
+                            <td>{{spot.id}}</td>
+                        </tr>
+                        <tr>
+                            <th>Parking Lot:</th>
+                            <td>{{lot.id}} - {{lot.address}}</td>
+                        </tr>
+                        <tr>
+                            <th>Status:</th>
+                            <td>
+                                {% if spot.status == "A" %}
+                                    <span class="badge bg-success">Available</span>
+                                {% elif spot.status == "O" %}
+                                    <span class="badge bg-danger">Occupied</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{spot.status}}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Price per Hour:</th>
+                            <td>Rs. {{lot.price}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vehicle Details Card (only if occupied) -->
+        {% if vehicle_details %}
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5><i class="fas fa-car"></i> Current Vehicle Details</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <th>Vehicle Number:</th>
+                            <td><strong>{{vehicle_details.vehicle_no}}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Owner Name:</th>
+                            <td>{{vehicle_details.user_name}}</td>
+                        </tr>
+                        <tr>
+                            <th>Owner Email:</th>
+                            <td>{{vehicle_details.user_email}}</td>
+                        </tr>
+                        <tr>
+                            <th>Owner Address:</th>
+                            <td>{{vehicle_details.user_address}}</td>
+                        </tr>
+                        <tr>
+                            <th>Parking Start:</th>
+                            <td>{{vehicle_details.parking_start.strftime('%d/%m/%Y %H:%M')}}</td>
+                        </tr>
+                        <tr>
+                            <th>Duration:</th>
+                            <td><span class="badge bg-info">{{vehicle_details.duration_hours}} hours</span></td>
+                        </tr>
+                        <tr>
+                            <th>Current Cost:</th>
+                            <td><strong class="text-success">Rs. {{vehicle_details.current_cost}}</strong></td>
+                        </tr>
+                        <tr>
+                            <th>Booking ID:</th>
+                            <td>{{vehicle_details.booking_id}}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Action Buttons -->
+    
+                
+                
+                    <div class="btn-group" role="group">
+                        <!-- <a href="/edit_spot/{{lot.id}}/{{spot.id}}/{{name}}" 
+                           class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Edit Spot
+                        </a> -->
+                        
+                        {% if spot.status == "A" %}
+                        <a href="/delete_spot/{{lot.id}}/{{spot.id}}/{{name}}" 
+                           class="btn btn-danger"
+                           
+                            <i class="fas fa-trash"></i> Delete Spot
+                        </a>
+                        {% endif %}
+                    </div>
+                
+
+    <!-- Additional Information for Occupied Spots -->
+    {% if vehicle_details %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="alert alert-info" role="alert">
+                <h5 class="alert-heading"><i></i> Occupied Spot Information</h5>
+                <p>This parking spot is currently occupied by vehicle <strong>{{vehicle_details.vehicle_no}}</strong>. 
+                   The vehicle has been parked for <strong>{{vehicle_details.duration_hours}} hours</strong> 
+                   and the current cost is <strong>Rs. {{vehicle_details.current_cost}}</strong>.</p>
+                <hr>
+                
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

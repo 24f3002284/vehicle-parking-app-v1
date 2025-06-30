@@ -15,7 +15,7 @@
 
                     <!--Card 1 here--><div class="card" style="width: 18rem;">
                         <div class="card-body">
-                            <h5 class="card-title">Parking Lot {{stat.lot.id}}</h5>
+                            <h5 class="card-title">Parking Lot {{loop.index}}</h5>
 
                             <h6 class="card-subtitle mb-2 text-muted">Location : {{stat.lot.address}}</h6>
 
@@ -29,8 +29,17 @@
                                 <span style="color: red;">Occupied: {{stat.occ}}/{{stat.avail+stat.occ}}</span>
                             </div>
                             {%for spot in stat.lot.parking_spot%}
-                                <a href="/edit_spot/{{stat.lot.id}}/{{spot.id}}/{{name}}">{{spot.status}}</a>
-                            {%endfor%}   
+                                {% if spot.status == "A" %}
+                                <a href="/view_spot_details/{{stat.lot.id}}/{{spot.id}}/{{name}}" 
+                                   class="btn btn-sm btn-success" 
+                                   title="A">
+                                   {{spot.id}}
+                                </a>
+                                {%elif spot.status=="O"%}
+                                <a href="/view_spot_details/{{stat.lot.id}}/{{spot.id}}/{{name}}" class="btn btn-sm btn-danger" title="O">{{spot.id}}</a>
+                                {%endif%}
+                            {%endfor%}
+                               
                         <div>
                             <a href="/edit_lot/{{stat.lot.id}}/{{name}}" type="button" class="btn btn-outline-primary">Edit</a>
 

@@ -1,0 +1,32 @@
+
+{%extends "userlayout.html"%} 
+<!-- inherited all nav features -->
+{%block content%}
+    
+    <div class="centers">
+        Your Parking Summary {{msg}}
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <!--Card 1 here-->
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Parking History</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Parking Lot vs Total Hours Parked</h6>
+                        
+                        {% if image_file %}
+                            <img src="./static/images/{{image_file}}" width="250" height="250" alt="Parking Summary">
+                        {% else %}
+                            <img src="./static/images/{{name}}_summary.jpeg?t={{timestamp}}" width="250" height="250" alt="Parking Summary">
+                        {% endif %}
+                    </div>
+                </div>
+                <!--End of Card 1-->
+            </div>
+            <br>            
+        </div>
+    </div>    
+            
+{%endblock%}

@@ -49,8 +49,8 @@ class Reserve_parking_spot(db.Model):
     lot_id=db.Column(db.Integer,db.ForeignKey("parking_lot.id"),nullable=False)
     spot_id=db.Column(db.Integer,db.ForeignKey("parking_spot.id"),nullable=False)
     vehicle_no=db.Column(db.String,nullable=False)
-    p_time=db.Column(db.DateTime,nullable=False)
-    # l_time=db.Column(db.DateTime,nullable=False)
+    p_time=db.Column(db.DateTime,nullable=True)
+    l_time=db.Column(db.DateTime,nullable=True)
 
     #no need of relnships bcz this table is not acting as a master table(has no child table)
 

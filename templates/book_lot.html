@@ -21,7 +21,7 @@
                 {%endif%}
                   
                 <form action="/book_lot/{{name}}/{{lot_id}}/{{spot_id}}" method="POST">
-                <div class="input-form4">
+                <div class="input-form2">
                     <div class="mb-3">
                         <label for="email" class="form-label">Your Email : </label>
                         <input type="email" class="form-control" id="email" name="email" value="{{name}}" readonly> 
@@ -38,6 +38,10 @@
                     <div class="mb-3">
                         <label for="Vehicle Number" class="form-label">Vehicle Number : </label>
                         <input type="text" class="form-control" id="vehicle_no" name="vehicle_no" placeholder="KL 2605" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="p_time" class="form-label">Parking Time : </label>
+                        <input type="datetime-local" class="form-control" id="p_time" name="p_time">
                     </div>
 
                     <div>

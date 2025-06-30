@@ -14,7 +14,7 @@
             <div class="my_panel">
                 <nav class="navbar navbar-expand-lg navbar-light" style="background-color: aqua;">
                 <div class="container-fluid">
-                    <span class="navbar-text">Welcome {{f_name}}</span>
+                    <span class="navbar-text">Welcome {{name}}</span>
 
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                     
@@ -26,14 +26,14 @@
                         <a class="nav-link active" aria-current="page" href="/user/{{name}}">Home |</a> 
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link" href="#">Summary |</a> 
+                        <a class="nav-link" href="/summary_user/{{name}}">Summary |</a> 
                         </li>
                         <li class="nav-item">
                         <a class="nav-link" href="/login">Logout |</a>  
                         </li>
                     </ul>
 
-                        <a class="navbar-brand" href="/edit_profile_admin">Edit Profile</a>        
+                        <a class="navbar-brand" href="/edit_profile_user/{{name}}">Edit Profile</a>        
                     </div>
                 </div>
                 </nav>
