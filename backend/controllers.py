@@ -479,7 +479,6 @@ def my_bookings(name):
     user_bookings=Reserve_parking_spot.query.filter_by(user_id=name).all()
 
     active_bookings=[]
-    past_bookings=[]
 
     for booking in user_bookings:
         booking_data={
@@ -499,16 +498,7 @@ def my_bookings(name):
 
             active_bookings.append(booking_data)
 
-        else:
-            if booking.p_time and booking.l_time:
-                hours_diff=(booking.l_time-booking.p_time).total_seconds()/3600
-                cost=hours_diff*booking_data['lot'].price
-                booking_data['cost']=round(cost,2)
-                booking_data['duration']=round(hours_diff,2)
-
-            past_bookings.append(booking_data)
-
-    return render_template("my_bookings.html",name=name,active_bookings=active_bookings,past_bookings=past_bookings)
+    return render_template("my_bookings.html",name=name,active_bookings=active_bookings)
 
 
 @app.route("/l_time/<name>/<booking_id>")
