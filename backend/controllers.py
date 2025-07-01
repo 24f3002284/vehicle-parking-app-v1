@@ -563,7 +563,7 @@ def edit_admin(email):
 
         return redirect(url_for("admindashboardfn",name=email,msg="Succesfully edited!"))
 
-    return render_template("edit_a.html",email=email,password=p,name=n,address=a,pincode=pi)
+    return render_template("edit_admin.html",email=email,password=p,name=n,address=a,pincode=pi)
 
 
 @app.route("/summary_admin")
