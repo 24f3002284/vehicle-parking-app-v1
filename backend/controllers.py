@@ -475,7 +475,7 @@ def book_lot(name,pid,sid):
 
 @app.route("/my_bookings/<name>")
 def my_bookings(name):
-    #history and present bookings of each user
+    #present bookings of each user
     user_bookings=Reserve_parking_spot.query.filter_by(user_id=name).all()
 
     active_bookings=[]
@@ -619,41 +619,28 @@ def edit_pr(name):
 
 @app.route("/summary_user/<name>")
 def get_user_summary(name):
-    # graph=get_user_plots_summary(name)
+    #history of bookings of each user
+    user_bookings=Reserve_parking_spot.query.filter_by(user_id=name).all()
+    
+    past_bookings=[]
 
-    # graph.savefig(f"./static/images/{name}_summary.jpeg")
-    # graph.clf()
-    
-    # return render_template("summary_user.html",name=name)
+    for booking in user_bookings:
+        booking_data={
+            'booking':booking,
+            'lot':get_lot(booking.lot_id),
+            'spot':get_spot(booking.spot_id)
+        }
 
-    import os
-    
-    # Generate unique filename to avoid caching issues
-    from datetime import datetime
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"{name}_summary_{timestamp}.jpeg"
-    filepath = f"./static/images/{filename}"
-    
-    # Remove old summary files for this user (optional cleanup)
-    try:
-        import glob
-        old_files = glob.glob(f"./static/images/{name}_summary*.jpeg")
-        for old_file in old_files:
-            if os.path.exists(old_file):
-                os.remove(old_file)
-    except:
-        pass  # Ignore cleanup errors
-    
-    graph = get_user_plots_summary(name)
-    
-    # Save with unique filename
-    graph.savefig(filepath, dpi=150, bbox_inches='tight')
-    graph.clf()
-    plt.close('all')  # Ensure all figures are closed
-    
-    return render_template("summary_user.html", name=name, image_file=filename)
+        if booking.l_time is not None:
+            if booking.p_time and booking.l_time:
+                hours_diff=(booking.l_time-booking.p_time).total_seconds()/3600
+                cost=hours_diff*booking_data['lot'].price
+                booking_data['cost']=round(cost,2)
+                booking_data['duration']=round(hours_diff,2)
 
-
+            past_bookings.append(booking_data)
+    
+    return render_template("summary_user.html", name=name, past_bookings=past_bookings)
 
 
 #supporter fns
