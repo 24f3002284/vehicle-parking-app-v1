@@ -7,26 +7,77 @@
         Your Parking Summary {{msg}}
     </div>
 
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <!--Card 1 here-->
-                <div class="card" style="width: 18rem;">
-                    <div class="card-body">
-                        <h5 class="card-title">Parking History</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Parking Lot vs Total Hours Parked</h6>
-                        
-                        {% if image_file %}
-                            <img src="./static/images/{{image_file}}" width="250" height="250" alt="Parking Summary">
-                        {% else %}
-                            <img src="./static/images/{{name}}_summary.jpeg?t={{timestamp}}" width="250" height="250" alt="Parking Summary">
-                        {% endif %}
-                    </div>
+    <!--Past Bookings-->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5>Booking History</h5>
                 </div>
-                <!--End of Card 1-->
+                <div class="card-body">
+                    {%if past_bookings%}
+                        <div class="table-responsive">
+                            <table>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Location</th>
+                                    <th>Spot ID</th>
+                                    <th>Vehicle No</th>
+                                    <th>Start Time</th>
+                                    <th>End Time</th>
+                                    <th>Duration</th>
+                                    <th>Total Cost</th>
+                                    <th>Status</th>
+                                </tr>
+
+                                {%for booking_data in past_bookings%}
+                                <tr>
+                                    <td>{{booking_data.booking.id}}</td>
+                                    <td>{{booking_data.lot.address}}</td>
+                                    <td>{{booking_data.spot.id}}</td>
+                                    <td>{{booking_data.booking.vehicle_no}}</td>
+                                    <td>{{booking_data.booking.p_time.strftime('%d/%m/%Y %H:%M')}}</td>
+                                    <td>
+                                        {%if booking_data.booking.l_time%}
+                                        {{booking_data.booking.l_time.strftime('%d/%m/%Y %H:%M')}}
+                                        {%else%}
+                                        <span class="text-muted">-</span>
+                                        {%endif%}
+                                    </td>
+                                    <td>
+                                        {%if booking_data.duration%}
+                                        {{booking_data.duration}} hours
+                                        {%else%}
+                                        <span class="text-muted">-</span>
+                                        {%endif%}
+                                    </td>
+                                    <td>
+                                        {%if booking_data.cost%}
+                                            <strong class="text-success">Rs.{{booking_data.cost}}</strong>
+                                        {%else%}
+                                            <span class="text-muted">-</span>
+                                        {%endif%}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success">Completed</span>
+                                    </td>
+                                </tr>
+                            {%endfor%}
+                            </table>
+                        </div>
+                    {%else%}
+
+                    <div class="text-center py-4">
+                        <h5>No Past Bookings</h5>
+                        <p>You haven't completed any parking sessions yet.</p>
+                    </div>
+                    {%endif%}
+                </div>
+
             </div>
-            <br>            
-        </div>
-    </div>    
+
+    </div>
+    </div>
+     
             
 {%endblock%}
